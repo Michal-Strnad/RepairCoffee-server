@@ -2,34 +2,17 @@ const router = require("express").Router();
 const db = require("../modules/db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const writeLog = require("../modules/writeLog");
 const { OAuth2Client } = require("google-auth-library");
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-
-
-
-// test routy - staci ignorovat, jen pro testovani backendu ----------------------------
-router.get("/test", (req, res) => {
-  res.json({ message: "Test route is working" });
-});
-
-router.post("/logintest", async (req, res) => {
-    const bodyData = req.body;
-    console.log("Login request received:", req.body);
-      res.json({ message: "Login route is working" });
-  });
-// --------------------------------------------------------------------------------------
-
-
-
 
 
 //google login route
 router.post("/google", async (req, res) => {
     //Vezmu si credential (dlouhy string) z requestu
     const { credential } = req.body;
-    console.log("Google login request received:", req.body);
+    writeLog(`Google login request received`);
 
     try {
         //Overeni tokenu (credential) u Google
@@ -44,7 +27,6 @@ router.post("/google", async (req, res) => {
         const name = payload.name;
         const picture = payload.picture;
         const sub = payload.sub; // Unique Google user ID
-        console.log("Google login payload:", payload);
 
         //Odeslani response na frontend pro overeni, ze login probehl uspesne
         //res.json({ message: "Google login successful", payload });
@@ -60,14 +42,14 @@ router.post("/google", async (req, res) => {
         if (existingUser.length > 0) {
             //Uzivatel existuje, vratim jeho data
             user = existingUser[0];
-            console.log("Existing user found:", user);
+            writeLog(`User logged in: id ${user.id}, ${user.name}, ${user.email}`);
         } else {
             //Uzivatel neexistuje, vytvorim noveho uzivatele v databazi
             const [result] = await db.promise().execute(
                 "INSERT INTO users (name, role, email, picture, google_sub, user_password) VALUES (?, ?, ?, ?, ?, ?)",
                 [name, "user", email, picture, sub, genPass(17)]
             );
-            console.log("New user created with ID:", result.insertId);
+            writeLog(`New user created with ID: ${result.insertId} using google.`);
             user = { id: result.id, name, role: result.role, email, picture, google_sub: sub };
         }
 
@@ -101,7 +83,7 @@ router.post("/google", async (req, res) => {
 //email login route
 router.post("/email", async (req, res) => {
     const { email, password } = req.body;
-    console.log("Email login request received:", req.body);
+    writeLog("Email login request received");
 
     try {
         //Kontrola, zda uzivatel s danym emailem existuje v databazi
@@ -111,7 +93,7 @@ router.post("/email", async (req, res) => {
         );
 
         if (existingUser.length === 0) {
-            console.log("User not found for email:", email);
+            writeLog(`User not found for ${email}`);
             return res.status(400).json({ message: "User not found" });
         }
 
@@ -122,6 +104,8 @@ router.post("/email", async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid credentials" });
         }
+
+        writeLog(`User logged in: id ${user.id}, ${user.name}, ${user.email}`);
 
         //Vytvoreni JWT tokenu pro uzivatele
         const token = jwt.sign({
@@ -149,7 +133,7 @@ router.post("/email", async (req, res) => {
 //email register route
 router.post("/register", async (req, res) => {
     const { name, email, password, passwordRetype } = req.body;
-    console.log("Register request received:", req.body);
+    writeLog(`Register request received for ${req.body.email}`);
 
     try {
         //Kontrola, zda se hesla shoduji
@@ -163,6 +147,7 @@ router.post("/register", async (req, res) => {
             [email]
         );
         if (existingUser.length > 0) {
+            writeLog(`user ${req.body.email} already exists`)
             return res.status(400).json({ message: "User already exists" });
         }
 
@@ -175,7 +160,7 @@ router.post("/register", async (req, res) => {
             [name, "user", email, hashedPassword]
         );
 
-        console.log("New user created with ID:", result.insertId);
+        writeLog(`New user created with ID: ${result.insertId} using email`);
 
         //Vytvoreni JWT tokenu pro noveho uzivatele
         const token = jwt.sign({

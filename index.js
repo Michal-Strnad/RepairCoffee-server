@@ -4,8 +4,9 @@ dotenv.config();
 //ostatni moduly
 const express = require("express");
 const cors = require("cors");
+//moje moduly
 const db = require("./modules/db");
-const requireAuth= require("./modules/requireAuth");
+const requireAuth = require("./modules/requireAuth");
 
 //nacte port z .env nebo pouzij 5000 jako default
 const PORT = process.env.PORT || 5000;
@@ -40,17 +41,17 @@ db.getConnection((err, connection) => {
 
 //routes
 app.use("/auth", require("./routes/auth"));
-
+app.use("/userSettings", requireAuth, require("./routes/controller/userSettings"));
 
 
 
 //testovaci routa pro ziskani dat z databaze podle JWT tokenu ---------------------
 app.get("/profile", requireAuth, async (req, res) => {
-  const googleSub = req.user.google_sub; 
+  const currentname = req.user.name; 
 
   const [testData] = await db.promise().execute(
-    "SELECT id, name, role, created_at FROM users WHERE google_sub = ?",
-    [googleSub]
+    "SELECT id, name, role, created_at FROM users WHERE name = ?",
+    [currentname]
   );
 
   res.json({ testData1: "Zkouska nacteni dat z databaze pode uzivatele", testData2: testData });
