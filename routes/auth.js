@@ -51,7 +51,7 @@ router.post("/google", async (req, res) => {
 
         //Kontrola, zda uzivatel s danym Google sub existuje v databazi
         const [existingUser] = await db.promise().execute(
-            "SELECT id, name, email, picture, google_sub FROM users WHERE google_sub = ?",
+            "SELECT id, name, role, email, picture, google_sub FROM users WHERE google_sub = ?",
             [sub]
           );
 
@@ -64,17 +64,18 @@ router.post("/google", async (req, res) => {
         } else {
             //Uzivatel neexistuje, vytvorim noveho uzivatele v databazi
             const [result] = await db.promise().execute(
-                "INSERT INTO users (name, email, picture, google_sub, user_password) VALUES (?, ?, ?, ?, ?)",
-                [name, email, picture, sub, genPass(17)]
+                "INSERT INTO users (name, role, email, picture, google_sub, user_password) VALUES (?, ?, ?, ?, ?, ?)",
+                [name, "user", email, picture, sub, genPass(17)]
             );
             console.log("New user created with ID:", result.insertId);
-            user = { id: result.id, name, email, picture, google_sub: sub };
+            user = { id: result.id, name, role: result.role, email, picture, google_sub: sub };
         }
 
         //Vytvoreni JWT tokenu pro uzivatele
         const token = jwt.sign({
             id: user.id,
             name: user.name,
+            role: user.role,
             email: user.email,
             picture: user.picture,
             google_sub: user.google_sub
@@ -84,6 +85,7 @@ router.post("/google", async (req, res) => {
         res.json({ token, user: {
             id: user.id,
             name: user.name,
+            role: user.role,
             email: user.email,
             picture: user.picture,
             google_sub: user.google_sub
@@ -104,7 +106,7 @@ router.post("/email", async (req, res) => {
     try {
         //Kontrola, zda uzivatel s danym emailem existuje v databazi
         const [existingUser] = await db.promise().execute(
-            "SELECT id, name, email, user_password FROM users WHERE email = ?",
+            "SELECT id, name, role, email, user_password FROM users WHERE email = ?",
             [email]
         );
 
@@ -125,6 +127,7 @@ router.post("/email", async (req, res) => {
         const token = jwt.sign({
             id: user.id,
             name: user.name,
+            role: user.role,
             email: user.email
         }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
@@ -132,6 +135,7 @@ router.post("/email", async (req, res) => {
         res.json({ token, user: {
             id: user.id,
             name: user.name,
+            role: user.role,
             email: user.email
         } });
 
@@ -167,8 +171,8 @@ router.post("/register", async (req, res) => {
 
         //Vytvoreni noveho uzivatele v databazi
         const [result] = await db.promise().execute(
-            "INSERT INTO users (name, email, user_password) VALUES (?, ?, ?)",
-            [name, email, hashedPassword]
+            "INSERT INTO users (name, role, email, user_password) VALUES (?, ?, ?, ?)",
+            [name, "user", email, hashedPassword]
         );
 
         console.log("New user created with ID:", result.insertId);
@@ -177,6 +181,7 @@ router.post("/register", async (req, res) => {
         const token = jwt.sign({
             id: result.insertId,
             name,
+            role: result.role,
             email
         }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
@@ -184,6 +189,7 @@ router.post("/register", async (req, res) => {
         res.json({ token, user: {
             id: result.insertId,
             name,
+            role: result.role,
             email
         } });
 
