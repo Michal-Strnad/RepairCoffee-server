@@ -1,5 +1,5 @@
-function updatePicture() {
+function updatePictureAbl() {
 
 }
 
-module.exports = updatePicture;
+module.exports = updatePictureAbl;

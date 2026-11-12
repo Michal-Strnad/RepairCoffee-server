@@ -4,3 +4,32 @@
 [12.11.26 16:25:28] User logged in: id 2, testUser, strnadmichal105@seznam.cz
 [12.11.26 16:25:35] Email login request received
 [12.11.26 16:25:35] User not found for aa@d.ce
+[12.11.26 16:58:46] Google login request received
+[12.11.26 16:58:46] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 18:10:35] Google login request received
+[12.11.26 18:10:35] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 18:28:52] Google login request received
+[12.11.26 18:28:52] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 18:29:42] Google login request received
+[12.11.26 18:29:42] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 18:35:12] Google login request received
+[12.11.26 18:35:12] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 18:37:25] Google login request received
+[12.11.26 18:37:25] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 18:46:14] Google login request received
+[12.11.26 18:46:14] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 19:00:55] Google login request received
+[12.11.26 19:00:56] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 19:01:56] Google login request received
+[12.11.26 19:01:56] User logged in: id 1, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 19:02:05] User Michal Strnad with ID 1 deleted the account.
+[12.11.26 19:02:39] Google login request received
+[12.11.26 19:02:39] New user created with ID: 3 using google.
+[12.11.26 19:04:16] Email login request received
+[12.11.26 19:04:16] User logged in: id 2, testUser, strnadmichal105@seznam.cz
+[12.11.26 19:04:24] User testUser with ID 2 deleted the account.
+[12.11.26 19:20:26] Google login request received
+[12.11.26 19:20:26] User logged in: id 3, Michal Strnad, strnadmichal105@gmail.com
+[12.11.26 19:20:37] User Michal Strnad with ID 3 deleted the account.
+[12.11.26 19:21:16] Google login request received
+[12.11.26 19:21:16] New user created with ID: 4 using google.

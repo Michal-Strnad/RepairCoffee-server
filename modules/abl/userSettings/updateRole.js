@@ -1,5 +1,5 @@
-function updateRole() {
+function updateRoleAbl() {
 
 }
 
-module.exports = updateRole;
+module.exports = updateRoleAbl;

@@ -1,5 +1,5 @@
-function updatePassword() {
+function updatePasswordAbl() {
 
 }
 
-module.exports = updatePassword;
+module.exports = updatePasswordAbl;
