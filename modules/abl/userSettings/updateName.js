@@ -1,6 +1,5 @@
 const Ajv = require("ajv")
 const ajv = new Ajv();
-const db = require("../../db");
 const userSettingsDao = require("../../dao/userSettingsDao");
 
 const updateSchema = {

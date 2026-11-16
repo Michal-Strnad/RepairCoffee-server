@@ -5,6 +5,7 @@ const multer = require('multer'); //pro nahravani souboru
 const path = require('path'); //pro nahravani souboru
 const sharp = require('sharp'); //pro nahravani souboru (konvertor)
 const fs = require('fs'); //pro nahravani souboru (konvertor - pro smazani puvodniho souboru)
+const bcrypt = require('bcryptjs'); //hashovani hesla
 
 async function updatePicture(req, res, fileInfo) {
     //vytvoreni slozky pokud neexistuje (protoze nedavam tuto slozku na git)
@@ -58,17 +59,30 @@ async function updatePicture(req, res, fileInfo) {
 }
 
 async function updateName(updateData) {
+    //zapis do databaze
     await db.promise().execute(
         "UPDATE users SET name = ? WHERE id = ?",
         [updateData.newName, updateData.id]
     );
+    //log
     writeLog(`User ${updateData.name} with ID ${updateData.id} changed the name to ${updateData.newName}.`)
-    const newUserData = await genNewToken(updateData.id); //update JWT tokenu, ziskani novych udaju
+    //update JWT tokenu, ziskani novych udaju
+    const newUserData = await genNewToken(updateData.id);
     return {status: 200, message: "Name changed.", newUserData};
 }
 
 async function updatePassword(updateData) {
-
+    //zahashovani hesla
+    const hashedPassword = await bcrypt.hash(updateData.newPassword, 10);
+    //zapis do databaze
+    await db.promise().execute(
+        "UPDATE users SET user_password = ? WHERE id = ?",
+        [hashedPassword, updateData.id]
+    );
+    writeLog(`User ${updateData.name} with ID ${updateData.id} changed the password`)
+    //update JWT tokenu, ziskani novych udaju
+    const newUserData = await genNewToken(updateData.id);
+    return {status: 200, message: "Password changed", newUserData}
 }
 
 
