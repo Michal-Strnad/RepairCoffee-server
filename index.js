@@ -4,6 +4,7 @@ dotenv.config();
 //ostatni moduly
 const express = require("express");
 const cors = require("cors");
+const path = require('path')
 //moje moduly
 const db = require("./modules/db");
 const requireAuth = require("./modules/requireAuth");
@@ -22,8 +23,6 @@ app.use(cors({
 }));
 
 
-
-
 //test webpage
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -40,8 +39,9 @@ db.getConnection((err, connection) => {
 });
 
 //routes
-app.use("/auth", require("./routes/auth"));
-app.use("/userSettings", requireAuth, require("./routes/controller/userSettings"));
+app.use("/auth", require("./routes/auth")); //authentication route
+app.use("/userSettings", requireAuth, require("./routes/controller/userSettings")); //user settings route
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); //uploads route
 
 
 
