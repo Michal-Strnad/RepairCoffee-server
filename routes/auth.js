@@ -88,7 +88,7 @@ router.post("/email", async (req, res) => {
     try {
         //Kontrola, zda uzivatel s danym emailem existuje v databazi
         const [existingUser] = await db.promise().execute(
-            "SELECT id, name, role, email, user_password FROM users WHERE email = ?",
+            "SELECT id, name, role, email, picture, google_sub, user_password FROM users WHERE email = ?",
             [email]
         );
 
@@ -112,7 +112,9 @@ router.post("/email", async (req, res) => {
             id: user.id,
             name: user.name,
             role: user.role,
-            email: user.email
+            email: user.email,
+            picture: user.picture,
+            google_sub: user.google_sub //neni pouzito, jedna se o sjednoceni pro dalsi operace
         }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         //Odeslani tokenu a dat uzivatele na frontend
@@ -120,7 +122,9 @@ router.post("/email", async (req, res) => {
             id: user.id,
             name: user.name,
             role: user.role,
-            email: user.email
+            email: user.email,
+            picture: user.picture,
+            google_sub: user.google_sub //neni pouzito, jedna se o sjednoceni pro dalsi operace
         } });
 
     } catch (error) {

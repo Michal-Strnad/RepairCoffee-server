@@ -16,7 +16,9 @@ const validate = ajv.compile(updateSchema);
 
 function deleteAccountAbl(req, res) {
     try {
-        const updateData = req.user;
+        const updateData = {};
+        updateData.id = req.user.id;
+        updateData.name = req.user.name;
 
         //kontrola, zda jsou data ve validnim formatu
         const valid = validate(updateData);
