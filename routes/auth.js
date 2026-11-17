@@ -50,7 +50,7 @@ router.post("/google", async (req, res) => {
                 [name, "user", email, picture, sub, genPass(17)]
             );
             writeLog(`New user created with ID: ${result.insertId} using google.`);
-            user = { id: result.id, name, role: result.role, email, picture, google_sub: sub };
+            user = { id: result.insertId, name, role: "user", email, picture, google_sub: sub };
         }
 
         //Vytvoreni JWT tokenu pro uzivatele
