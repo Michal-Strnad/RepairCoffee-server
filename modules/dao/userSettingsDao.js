@@ -96,8 +96,13 @@ function deleteAccount(updateData) {
 }
 
 //admins
-function updateRole(updateData) {
-
+async function updateRole(updateData) {
+    await db.promise().execute(
+        "UPDATE users SET role = ? WHERE id = ?",
+        [updateData.role, updateData.userId]
+    );
+    writeLog(`Administrator ${updateData.name} with ID ${updateData.id} updated the role to ${updateData.role} to user ${updateData.userName} with ID ${updateData.userId}`)
+    return {status: 200, message: `Role for ${updateData.userName} has been changed to ${updateData.role}`};
 }
 
 

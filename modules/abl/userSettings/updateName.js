@@ -16,7 +16,7 @@ const validate = ajv.compile(updateSchema);
 
 async function updateNameAbl(req, res) {
     try {
-        //Pozadavek
+        //Sestaveni updateData
         const updateData = {};
         updateData.id = req.user.id;
         updateData.name = req.user.name;
