@@ -95,16 +95,23 @@ function deleteAccount(updateData) {
     return {status: 200, message: "Account deleted, you may log out."};
 }
 
-//admins
+//admins - update role
 async function updateRole(updateData) {
     await db.promise().execute(
         "UPDATE users SET role = ? WHERE id = ?",
         [updateData.role, updateData.userId]
     );
     writeLog(`Administrator ${updateData.name} with ID ${updateData.id} updated the role to ${updateData.role} to user ${updateData.userName} with ID ${updateData.userId}`)
-    return {status: 200, message: `Role for ${updateData.userName} has been changed to ${updateData.role}`};
+    return {status: 200, message: `Role for ${updateData.userName} with ID ${updateData.userId} has been changed to ${updateData.role}`};
 }
 
+//users list
+async function getUsers() {
+    const [users] = await db.promise().execute(
+        "SELECT id, name, role, email, picture FROM users"
+    );
+    return users;
+}
 
 
 //obnoveni tokenu po updatu
@@ -145,5 +152,6 @@ module.exports = {
     updateName,
     updatePassword,
     deleteAccount,
-    updateRole
+    updateRole,
+    getUsers
 }

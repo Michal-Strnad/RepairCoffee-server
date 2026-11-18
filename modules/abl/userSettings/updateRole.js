@@ -2,6 +2,7 @@ const db = require("../../db");
 const Ajv = require("ajv")
 const ajv = new Ajv();
 const userSettingsDao = require("../../dao/userSettingsDao");
+const writeLog = require("../../writeLog");
 
 const updateSchema = {
     type: "object",
@@ -21,7 +22,7 @@ async function updateRoleAbl(req, res) {
     try {
         const id = req.user.id;
         const name = req.user.name;
-        const userEmail = req.body.userEmail;
+        const userId = req.body.userId;
         const role = req.body.role;
 
         const [existingAdminUser] = await db.promise().execute(
@@ -29,8 +30,8 @@ async function updateRoleAbl(req, res) {
             [id]
         );
         const [existingUpdatedUser] = await db.promise().execute(
-            "SELECT id, name, role, email, picture, google_sub, user_password FROM users WHERE email = ?",
-            [userEmail]
+            "SELECT id, name, role, email, picture, google_sub, user_password FROM users WHERE id = ?",
+            [userId]
         );
 
         const adminUser = existingAdminUser[0];
@@ -46,8 +47,8 @@ async function updateRoleAbl(req, res) {
 
         //zjistit, zda updatovany uzivatel existuje
         if (existingUpdatedUser.length === 0) {
-            writeLog(`${name}: Role update for ${userEmail} failed, user not found`);
-            return res.status(400).json({ message: `Role update for ${userEmail} failed, user not found` });
+            writeLog(`${name}: Role update for ID ${userId} failed, user not found`);
+            return res.status(400).json({ message: `Role update for ID ${userId} failed, user not found` });
         }
 
         const updatedUser = existingUpdatedUser[0];
