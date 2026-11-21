@@ -17,8 +17,12 @@ const app = express();
 //middleware pro parsovani JSON requestu
 app.use(express.json());
 //middleware pro povoleni CORS
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173'
+]
 app.use(cors({
-    origin: process.env.REACT_URL || 'http://localhost:3000', //Povoleni pristupu z reactu (zablokovane jsou vsechny ostatni pristupy, takze node je plne oddelen od zbytku site)
+    origin: process.env.REACT_URL || allowedOrigins, //Povoleni pristupu z reactu (zablokovane jsou vsechny ostatni pristupy, takze node je plne oddelen od zbytku site)
     credentials: true //povoleni zasilani cookies
 }));
 
